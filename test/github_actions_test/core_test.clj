@@ -2,4 +2,5 @@
   (:require [clojure.test :refer [deftest is]]))
 
 (deftest a-test
-  (is true))
+  (is true)
+  (is false))
