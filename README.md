@@ -1,6 +1,7 @@
 # github_actions_test
 
 FIXME: description
+![Build Status](https://github.com/AppsFlyer/aerospike-clj/workflows/Build/badge.svg)
 
 ## Installation
 
