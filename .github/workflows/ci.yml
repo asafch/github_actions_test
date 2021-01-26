@@ -58,9 +58,11 @@ jobs:
           CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
         if: github.event_name != 'pull_request' && env.CLOJARS_PASSWORD != ''
         run: |
-          echo "$GITHUB_REF"
+          export BRANCH=$(echo "$GITHUB_REF" | cut -d "/" -f3)
+          echo "Branch is:" $BRANCH
           lein install
           export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
-          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]] || [[ "$GITHUB_REF" = MASTER ]]; then echo "Snpashot version" $VERSION "is not valid"; exit 1; fi
+          echo "Version is:" $VERSION
+          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]] || [[ "$BRANCH" = master ]]; then echo "Snapashot version" $VERSION "is not valid"; exit 1; fi
           lein deploy
           echo "Snapshot version" $VERSION "successfully deployed to Clojars"
