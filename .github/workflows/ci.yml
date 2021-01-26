@@ -55,8 +55,13 @@ jobs:
           key: ${{ runner.os }}-maven-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: "Unit tests"
+      - name: Unit tests
         run: lein with-profile ci eftest
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: "target/junit.xml"
   deploy:
     needs: test
     runs-on: ubuntu-18.04

@@ -9,6 +9,9 @@
                                       :sign-releases false}]]
   :dependencies [[org.clojure/clojure "1.10.0"]]
   :profiles {:dev     {:plugins      [[lein-eftest "0.5.9"]]
+                       :eftest       {:multithread?   false
+                                      :report         eftest.report.junit/report
+                                      :report-to-file "target/junit.xml"}
                        :dependencies [[org.clojure/clojure "1.10.1"]
                                       [clj-kondo "RELEASE"]]
                        :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]
