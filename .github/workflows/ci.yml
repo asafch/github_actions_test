@@ -3,10 +3,10 @@ on:
   push:
     branches:
       - master
-      - "*.*.*"
+      - "[0-9]+.[0-9]+.[0-9]+"
   pull_request:
     branches:
-      - "*.*.*"
+      - "[0-9]+.[0-9]+.[0-9]+"
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -17,6 +17,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Cache local Maven repository
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
+          restore-keys: |
+          ${{ runner.os }}-maven-
       - name: Lint
         run: lein lint src test --cache false
   test:
@@ -39,6 +46,13 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Restore local Maven repository from cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
       - name: "Unit tests"
         run: lein eftest
   deploy:
@@ -51,7 +65,14 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
-      - name: "Deploy SNAPSHOT"
+      - name: Restore local Maven repository from cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      - name: Deploy SNAPSHOT
         env:
           SNAPSHOT_REGEX: ^[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{1,3}-SNAPSHOT$
           CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
