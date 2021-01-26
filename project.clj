@@ -14,5 +14,6 @@
                        :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]
                                       "lint"      ["run" "-m" "clj-kondo.main" "--lint" "src" "test"]}
                        :global-vars  {*warn-on-reflection* true}}
+             :ci      {:local-repo "~/.m2/repository"}
              :uberjar {:aot :all}}
   :main ^:skip-aot github-actions-test.core)
