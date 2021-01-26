@@ -25,8 +25,11 @@ jobs:
           key: ${{ runner.os }}-maven-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Lint
-        run: lein with-profile ci run lint src test --cache false
+      - uses: DeLaGuardo/clojure-lint-action@master
+        name: Lint
+        with:
+          clj-kondo-args: --lint src test --cache false
+          github_token: ${{ secrets.GITHUB_TOKEN }}
   test:
     needs: build
     runs-on: ubuntu-18.04
@@ -57,12 +60,12 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Unit tests
         run: lein with-profile ci eftest
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.6
-        if: always()
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          files: "target/junit.xml"
+#      - name: Publish Unit Test Results
+#        uses: EnricoMi/publish-unit-test-result-action@v1.6
+#        if: always()
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          files: "target/junit.xml"
   deploy:
     needs: test
     runs-on: ubuntu-18.04
