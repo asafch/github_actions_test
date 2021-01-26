@@ -23,7 +23,7 @@ jobs:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/project.clj') }}
           restore-keys: |
-          ${{ runner.os }}-maven-
+            ${{ runner.os }}-maven-
       - name: Lint
         run: lein lint src test --cache false
   test:
@@ -81,7 +81,7 @@ jobs:
         run: |
           export BRANCH=$(echo "$GITHUB_REF" | cut -d "/" -f3)
           echo "Branch is:" $BRANCH
-          lein install
+          lein pom
           export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Version is:" $VERSION
           if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]]
@@ -93,5 +93,5 @@ jobs:
             echo "On branch 'master', skipping deployment to Clojars..."
             exit 0
           fi
-          lein deploy
+          lein do uberjar, deploy
           echo "Snapshot version" $VERSION "successfully deployed to Clojars"
