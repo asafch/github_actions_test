@@ -63,6 +63,14 @@ jobs:
           lein install
           export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Version is:" $VERSION
-          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]] || [[ "$BRANCH" = master ]]; then echo "Snapashot version" $VERSION "is not valid"; exit 1; fi
+          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]]
+          then
+            echo "Version isn't a snapshot:" $VERSION ", skipping deployment to Clojars..."
+            exit 0
+          elif [[ "$BRANCH" = master ]]
+          then
+            echo "On branch 'master', skipping deployment to Clojars..."
+            exit 0
+          fi
           lein deploy
           echo "Snapshot version" $VERSION "successfully deployed to Clojars"
