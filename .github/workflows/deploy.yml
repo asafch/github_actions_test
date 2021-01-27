@@ -39,12 +39,8 @@ jobs:
           lein pom
           export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Original version is:" $ORIGINAL_VERSION
-          cat project.clj | head -n 1 | echo
-          git checkout master
           lein do change version leiningen.release/bump-version release, vcs commit, install
-          cat project.clj | head -n 1 | echo
           lein pom
-          cat project.clj | head -n 1 | echo
           export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Release version is:" $RELEASE_VERSION
           if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
@@ -53,6 +49,6 @@ jobs:
             exit 0
           fi
           git tag -a $RELEASE_VERSION -m "Release version $RELEASE_VERSION"
-          git push origin master "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git"
+          git push origin master
           lein deploy
           echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
