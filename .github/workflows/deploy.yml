@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles( 'project.clj' ) }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      - name: Deploy SNAPSHOT
+      - name: Deploy release version
         env:
           SNAPSHOT_REGEX: ^[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{1,3}-SNAPSHOT$
           RELEASE_REGEX: ^[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{1,3}$
@@ -35,13 +35,18 @@ jobs:
         if: github.event_name == 'push' && github.ref == 'refs/heads/master'
         run: |
           lein pom
-          export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
-          echo "Version is:" $VERSION
-          if [[ !("$VERSION" =~ $RELEASE_REGEX) ]]
+          export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
+          echo "Original version is:" $ORIGINAL_VERSION
+          lein do change version leiningen.release/bump-version release, pom
+          export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
+          echo "Release version is:" $RELEASE_VERSION
+          if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
           then
             echo "Version isn't a release version:" $VERSION ", skipping deployment to Clojars..."
             exit 0
           fi
+          git checkout master
+          lein do vcs commit, install
           git tag -a $VERSION -m "Release version $VERSION"
-          lein do uberjar, deploy
-          echo "Release version" $VERSION "successfully deployed to Clojars"
+          lein deploy
+          echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
