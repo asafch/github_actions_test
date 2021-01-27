@@ -33,12 +33,17 @@ jobs:
           CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
         run: |
           git config --global user.name "github-actions-bot"
-          git config --global user.email "github-actions-bot@users.noreply.github.com"
+          git config --global user.email "<>"
+          git config --global push.followTags true
           lein pom
           export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Original version is:" $ORIGINAL_VERSION
+          cat project.clj | head -n 1 | echo
           git checkout master
-          lein do change version leiningen.release/bump-version release, vcs commit, install, pom
+          lein do change version leiningen.release/bump-version release, vcs commit, install
+          cat project.clj | head -n 1 | echo
+          lein pom
+          cat project.clj | head -n 1 | echo
           export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Release version is:" $RELEASE_VERSION
           if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
@@ -48,5 +53,5 @@ jobs:
           fi
           git tag -a $RELEASE_VERSION -m "Release version $RELEASE_VERSION"
           lein deploy
-          git push "https://gitlab-ci-token:${CI_GIT_TOKEN}@${CI_REPOSITORY_URL#*@}"
+          git push origin master
           echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
