@@ -35,16 +35,16 @@ jobs:
           lein pom
           export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Original version is:" $ORIGINAL_VERSION
-          lein do change version leiningen.release/bump-version release, pom
+          lein do change version leiningen.release/bump-version release, vcs commit, install, pom
           export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
           echo "Release version is:" $RELEASE_VERSION
           if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
           then
-            echo "Version isn't a release version:" $VERSION ", skipping deployment to Clojars..."
+            echo "Version isn't a release version:" $RELEASE_VERSION ", skipping deployment to Clojars..."
             exit 0
           fi
           git checkout master
           lein do vcs commit, install
-          git tag -a $VERSION -m "Release version $VERSION"
+          git tag -a $RELEASE_VERSION -m "Release version $RELEASE_VERSION"
           lein deploy
           echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
