@@ -24,6 +24,19 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles( 'project.clj' ) }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Validate snapshot
+        env:
+          SNAPSHOT_REGEX: ^[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{1,3}-SNAPSHOT$
+        if: github.ref != 'refs/heads/master'
+        run: |
+          lein pom
+          export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
+          echo "Version is:" $VERSION
+          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]]
+          then
+            echo "Version isn't a snapshot version:" $VERSION
+            exit 0
+          fi
       - name: Lint
         run: lein lint src test --cache false
 
