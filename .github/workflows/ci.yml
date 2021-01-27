@@ -26,8 +26,6 @@ jobs:
             ${{ runner.os }}-maven-
       - name: Lint
         run: lein lint src test --cache false
-      - name: Uberjar
-        run: lein uberjar
 
   test:
     needs: build
