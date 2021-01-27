@@ -32,22 +32,19 @@ jobs:
           CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
           CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
         run: |
-          echo ${{github.event_name}} ${{github.ref}}
-#        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-#        run: |
-#          lein pom
-#          export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
-#          echo "Original version is:" $ORIGINAL_VERSION
-#          lein do change version leiningen.release/bump-version release, pom
-#          export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
-#          echo "Release version is:" $RELEASE_VERSION
-#          if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
-#          then
-#            echo "Version isn't a release version:" $VERSION ", skipping deployment to Clojars..."
-#            exit 0
-#          fi
-#          git checkout master
-#          lein do vcs commit, install
-#          git tag -a $VERSION -m "Release version $VERSION"
-#          lein deploy
-#          echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
+          lein pom
+          export ORIGINAL_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
+          echo "Original version is:" $ORIGINAL_VERSION
+          lein do change version leiningen.release/bump-version release, pom
+          export RELEASE_VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
+          echo "Release version is:" $RELEASE_VERSION
+          if [[ !("$RELEASE_VERSION" =~ $RELEASE_REGEX) ]]
+          then
+            echo "Version isn't a release version:" $VERSION ", skipping deployment to Clojars..."
+            exit 0
+          fi
+          git checkout master
+          lein do vcs commit, install
+          git tag -a $VERSION -m "Release version $VERSION"
+          lein deploy
+          echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
