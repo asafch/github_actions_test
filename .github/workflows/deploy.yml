@@ -51,4 +51,4 @@ jobs:
           git tag -a $RELEASE_VERSION -m "Release version $RELEASE_VERSION"
           git push origin master
           lein deploy
-          echo "Release version" $VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
+          echo "Release version" $RELEASE_VERSION "; commit: " ${{github.sha}} "successfully deployed to Clojars"
