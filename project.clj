@@ -7,7 +7,7 @@
                                       :username      :env/clojars_username
                                       :password      :env/clojars_password
                                       :sign-releases false}]]
-  :dependencies [[org.clojure/clojure "1.10.0"]]
+  :dependencies [[org.clojure/clojure "1.10.2"]]
   :profiles {:dev     {:plugins      [[lein-eftest "0.5.9"]]
                        :eftest       {:multithread?   false
                                       :report         eftest.report.junit/report
