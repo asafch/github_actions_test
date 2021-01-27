@@ -1,5 +1,11 @@
 name: CI
-on: push
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
 jobs:
   build:
     runs-on: ubuntu-18.04
@@ -15,16 +21,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ github.sha }}
+          key: ${{ runner.os }}-maven-${{ hashFiles( 'project.clj' ) }}
           restore-keys: |
             ${{ runner.os }}-maven-
-#      - name: Lint
-#        run: lein with-profile ci run lint src test --cache false
-      - uses: DeLaGuardo/clojure-lint-action@master
-        name: Lint
-        with:
-          clj-kondo-args: --lint src test --cache false
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Lint
+        run: lein lint src test --cache false
+
   test:
     needs: build
     runs-on: ubuntu-18.04
@@ -50,55 +52,14 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ github.sha }}
+          key: ${{ runner.os }}-maven-${{ hashFiles( 'project.clj' ) }}
           restore-keys: |
             ${{ runner.os }}-maven-
       - name: Unit tests
-        run: lein with-profile ci eftest
+        run: lein eftest
 #      - name: Publish Unit Test Results
 #        uses: EnricoMi/publish-unit-test-result-action@v1.6
 #        if: always()
 #        with:
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
 #          files: "target/junit.xml"
-  deploy:
-    needs: test
-    runs-on: ubuntu-18.04
-    timeout-minutes: 5
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Set up JDK 8
-        uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Restore local Maven repository from cache
-        uses: actions/cache@v2
-        with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
-      - name: Deploy SNAPSHOT
-        env:
-          SNAPSHOT_REGEX: ^[0-9]{1,2}[.][0-9]{1,2}[.][0-9]{1,3}-SNAPSHOT$
-          CLOJARS_USERNAME: ${{ secrets.CLOJARS_USERNAME }}
-          CLOJARS_PASSWORD: ${{ secrets.CLOJARS_PASSWORD }}
-        if: github.event_name != 'pull_request' && env.CLOJARS_PASSWORD != ''
-        run: |
-          export BRANCH=$(echo "$GITHUB_REF" | cut -d "/" -f3)
-          echo "Branch is:" $BRANCH
-          lein with-profile ci pom
-          export VERSION=$(less pom.xml | grep "<version>" | head -1 | cut -d ">" -f2 | cut -d "<" -f1)
-          echo "Version is:" $VERSION
-          if [[ !("$VERSION" =~ $SNAPSHOT_REGEX) ]]
-          then
-            echo "Version isn't a snapshot:" $VERSION ", skipping deployment to Clojars..."
-            exit 0
-          elif [[ "$BRANCH" = master ]]
-          then
-            echo "On branch 'master', skipping deployment to Clojars..."
-            exit 0
-          fi
-          lein with-profile ci do uberjar, deploy
-          echo "Snapshot version" $VERSION "successfully deployed to Clojars"
