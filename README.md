@@ -2,8 +2,7 @@
 
 🏂
 
-
-![Build Status](https://github.com/asafch/github_actions_test/workflows/Build%20%26%20Test/badge.svg)
+[![Build Status](https://img.shields.io/github/workflow/status/asafch/github_actions_test/Build%20%26%20Test%20push?event=push&branch=master&label=build%20%26%20test)](https://github.com/asafch/github_actions_test/actions)
 
 ## Installation
 
