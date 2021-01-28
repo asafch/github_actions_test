@@ -3,7 +3,7 @@
 🏂
 
 
-![Build Status](https://github.com/asafch/github_actions_test/workflows/CI/badge.svg)
+![Build Status](https://github.com/asafch/github_actions_test/workflows/Build%20%26%20Test/badge.svg)
 
 ## Installation
 
