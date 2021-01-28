@@ -1,6 +1,7 @@
 name: "Pull Request Build & Test"
 
 on: pull_request
+  types: [opened, reopened]
 
 jobs:
   build:
