@@ -1,5 +1,5 @@
 (defproject org.clojars.asafch/github_actions_test "0.4.2-SNAPSHOT"
-  :description "FIXME: write description"
+  :description "A project to test GitHub Actions functionality"
   :url "https://github.com/asafch/github_actions_test"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
