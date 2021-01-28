@@ -1,4 +1,4 @@
-(defproject org.clojars.asafch/github_actions_test "0.2.7-SNAPSHOT"
+(defproject org.clojars.asafch/github_actions_test "0.2.7"
   :description "FIXME: write description"
   :url "https://github.com/asafch/github_actions_test"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
