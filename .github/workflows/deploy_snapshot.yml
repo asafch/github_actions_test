@@ -2,8 +2,8 @@ name: Deploy SNAPSHOT
 
 on:
   workflow_run:
-    workflows: "Build & Test push"
-    branches-ignore: master
+    workflows: ["Build & Test push"]
+    branches-ignore: [master]
     types:
       - completed
 
