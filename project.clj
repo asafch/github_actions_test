@@ -1,4 +1,4 @@
-(defproject org.clojars.asafch/github_actions_test "0.4.3"
+(defproject org.clojars.asafch/github_actions_test "0.4.4-SNAPSHOT"
   :description "A project to test GitHub Actions functionality"
   :url "https://github.com/asafch/github_actions_test"
   :license {:name "EPL-2.0 OR GPL-2.0-or-later WITH Classpath-exception-2.0"
@@ -22,6 +22,5 @@
                        :aliases      {"clj-kondo" ["run" "-m" "clj-kondo.main"]
                                       "lint"      ["run" "-m" "clj-kondo.main" "--lint" "src" "test"]}
                        :global-vars  {*warn-on-reflection* true}}
-             ;:ci      {:local-repo "~/.m2/repository"}
              :uberjar {:aot :all}}
   :main ^:skip-aot github-actions-test.core)

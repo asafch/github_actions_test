@@ -2,6 +2,8 @@
 
 🏂
 
+[![Clojars Project](https://img.shields.io/clojars/v/org.clojars.asafch/github_actions_test.svg)](https://clojars.org/org.clojars.asafch/github_actions_test)
+
 [![Build Status](https://img.shields.io/github/workflow/status/asafch/github_actions_test/Push%20CI%20-%20master?event=push&branch=master&label=build%20%26%20test)](https://github.com/asafch/github_actions_test/actions)
 
 ## Installation
